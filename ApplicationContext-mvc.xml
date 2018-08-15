@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:websocket="http://www.springframework.org/schema/websocket"  
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/mvc 
+	http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd	
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd
+	http://www.springframework.org/schema/websocket 
+	http://www.springframework.org/schema/websocket/spring-websocket.xsd">
+
+	<mvc:annotation-driven />
+	<mvc:default-servlet-handler />
+
+	<context:component-scan base-package="com.douples.controller" />
+	<context:component-scan base-package="com.json" />
+
+	<!-- 对静态资源文件的访问  restful -->
+	<mvc:resources mapping="/admin/**" location="/,/admin/" />
+	<mvc:resources mapping="/static/**" location="/,/static/" />
+	<mvc:resources mapping="/plugins/**" location="/,/plugins/" />
+	<mvc:resources mapping="/uploadFiles/**" location="/uploadFiles/" />
+	<mvc:resources mapping="/act/**" location="/,/act/" />
+
+	<!-- 访问拦截 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**/**" />
+
+			<mvc:exclude-mapping path="/mobile/**" />
+			<mvc:exclude-mapping path="/wxEntry/**" />
+			<mvc:exclude-mapping path="/uploadFiles/**" />
+			<mvc:exclude-mapping path="/WebSocket/**" />
+			<mvc:exclude-mapping path="/CommunicationController/**" />
+
+			<bean class="com.douples.framework.interceptor.LoginHandlerInterceptor" />
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	<!-- 配置SpringMVC的视图解析器 -->
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+	<bean id="exceptionResolver" class="com.douples.framework.resolver.MyExceptionResolver"></bean>
+	<!-- 上传拦截，如最大上传值及最小上传值 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize">
+			<!--测试-->
+			<value>5368709120</value>
+		</property>
+		<property name="maxInMemorySize">
+			<value>4096</value>
+		</property>
+		<property name="defaultEncoding">
+			<value>utf-8</value>
+		</property>
+	</bean>
+	
+	<!-- 配置好处理器 -->
+	<bean id="websocketHandler" class="com.douples.common.websocket.LiveWebSocketHandler"/>
+	<!-- 配置拦截器 -->
+    <websocket:handlers>
+        <websocket:mapping path="/WebSocket.do" handler="websocketHandler"/><!-- 连接的URL -->
+        <websocket:handshake-interceptors>
+            <bean class="com.douples.common.websocket.WebSocketHandshakeInterceptor"/>
+        </websocket:handshake-interceptors>
+    </websocket:handlers>
+
+
+
+	<!--1. 定时任务  每天定时更新数据库 -->
+<!-- 	<bean id="SpringUpdataQuestion" class="com.douples.facade.guessFacade.impl.GuessFacadeImpl" /> -->
+	
+	
+<!-- 	<bean id="SpringUpdataQuestionMethod" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean"> -->
+<!-- 		<property name="targetObject"> -->
+<!-- 			<ref bean="SpringUpdataQuestion" /> -->
+<!-- 		</property> -->
+<!-- 		<property name="targetMethod">  -->
+<!-- 			<value>quartzUpdataQuestion</value> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+
+	<!-- ======================== 调度触发器 ======================== -->
+	
+<!-- 	<bean id="UpdataQuestionBean" -->
+<!-- 		class="org.springframework.scheduling.quartz.CronTriggerFactoryBean"> -->
+<!-- 		<property name="jobDetail" ref="SpringUpdataQuestionMethod"></property> -->
+<!-- 		<property name="cronExpression" value="0/10 * * * * ?"></property> -->
+<!-- 	</bean> -->
+
+	<!-- ======================== 调度工厂 ======================== -->
+<!-- 	<bean id="SpringJobSchedulerFactoryBean" -->
+<!-- 		class="org.springframework.scheduling.quartz.SchedulerFactoryBean"> -->
+<!-- 		<property name="triggers"> -->
+<!-- 			<list> -->
+<!-- 				<ref bean="UpdataQuestionBean"/> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+
+</beans>
