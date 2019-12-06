@@ -820,7 +820,7 @@ body {
 			<div id="remote" class="vid-wrapper">
 				<video id="remoteVideo" style=" object-fit:fill" poster="" autoplay="autoplay" x5-playsinline="true" x5-video-player-type="" playsinline="" webkit-playsinline=""  class="video-js vjs-default-skin vjs-big-play-centered" ></video>
 				<div id="mini">
-					<video id="miniVideo" style="object-fit:fill" poster="" autoplay="autoplay"  x5-playsinline="true" x5-video-player-type="" playsinline="" webkit-playsinline=""  class="video-js vjs-default-skin vjs-big-play-centered" ></video>
+					<video id="miniVideo" mute="true" style="object-fit:fill" poster="" autoplay="autoplay"  x5-playsinline="true" x5-video-player-type="" playsinline="" webkit-playsinline=""  class="video-js vjs-default-skin vjs-big-play-centered" ></video>
 				</div>
 			</div>
 		</div>
